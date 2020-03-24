@@ -14,7 +14,7 @@
 //DHT dht(DHTPIN, DHTTYPE);
 
 /* Set these to your desired credentials. */
-const char *ssid = "CK315_2B44";  //ENTER YOUR WIFI SETTINGS
+const char *ssid = "DDDDDDDD";  //ENTER YOUR WIFI SETTINGS
 const char *password = "123123123";
 
 
