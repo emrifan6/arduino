@@ -15,8 +15,8 @@
 DHT dht(DHTPIN, DHTTYPE);
 
                   /* Set these to your desired credentials. */
-const char* ssid = "DEAART_plus";  //ENTER YOUR WIFI SETTINGS
-const char* password = "gasemwulung58";
+const char* ssid = "*****";  //ENTER YOUR WIFI SETTINGS
+const char* password = "******";
 
 
         //Web/Server address to read/write from
@@ -30,7 +30,7 @@ String Data, getData, Link, station;
                                     //float h = 12.123;
                                     //float t = 9.32; 
 
-String apiKeyValue = "muchamadrifan";
+String apiKeyValue = "********";
 
 void setup() {
   delay(1000);
