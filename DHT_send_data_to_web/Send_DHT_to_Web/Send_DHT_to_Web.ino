@@ -33,7 +33,7 @@ String Link ;
                   //float h = 12.123;
                   //float t = 9.32; 
 
-String apiKeyValue = "muchamadrifan";
+String apiKeyValue = "*********";
 
 void setup() {
   delay(1000);
