@@ -7,6 +7,7 @@
   Mini_Greenhouse_05
   - Menghilangkan NTP
   - Menambah RTC
+  - Nilai rata2 pembacaan dht
 
 */
 
@@ -182,13 +183,17 @@ void loop() {
     int dht01temp = buff_dht01_temp / buff_dht01id;
     int dhthum = buff_dht_hum / buff_dhtid;
     int dht01hum = buff_dht01_hum / buff_dht01id;
-    buff_dhtid = 0;
-    buff_dht01id = 0;
     senddata(0, dhttemp, dhthum, dht01temp, dht01hum, v_batt, v_solar, c_solar);
     buff_id = 0;
     buff_volt_batt = 0;
     buff_volt_solar = 0;
     buff_curr_solar = 0;
+    buff_dhtid = 0;
+    buff_dht01id = 0;
+    buff_dht_temp = 0;
+    buff_dht01_temp = 0;
+    buff_dht_hum = 0;
+    buff_dht01_hum = 0;
   }
 
   get_control_data();
