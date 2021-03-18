@@ -17,6 +17,8 @@ int mosfet = 2;
 unsigned long previousMillis = 0;        // will store last time LED was updated
 const long interval = 20000;           // interval at which to blink (milliseconds)
 
+float totalCharge = 0;
+float wattHour = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -57,8 +59,16 @@ void loop() {
   float voltbat = ina219.getBusVoltage_V()+0.25;
   if(voltbat <= 9.6){
     digitalWrite(mosfet, LOW);
-    Serial.println("SELESAI");
-    while(voltbat <= 9.6) { 
+    Serial.print("SELESAI   ");
+    Serial.print("   Tegangan ACCU = ");
+    Serial.print(voltbat);
+    Serial.print("   WAKTU = ");
+    Serial.print((currentMillis/1000)/60);
+    Serial.print(" menit  ");
+    Serial.print("   POWER WH = ");
+    Serial.print(wattHour);
+    Serial.println("Wh");
+    while(1) { 
     };
   } else{
       if (currentMillis - previousMillis >= interval) {
@@ -112,6 +122,13 @@ String ina219print(){
   current_A = ina219.getCurrent_mA()*2.96/1000;
   power_W = ina219.getPower_mW()*2.96/1000;
   loadvoltage = busvoltage + (shuntvoltage / 1000)-0.6;
+
+  unsigned long msec = millis();
+  totalCharge = totalCharge + power_W;
+  float detik = msec/1000;  
+  float jam =  detik / 3600;
+  wattHour = (totalCharge / (id+1)) * jam; 
+  
 
   if(current_A <= 0.0){
     current_A = 0.0;
