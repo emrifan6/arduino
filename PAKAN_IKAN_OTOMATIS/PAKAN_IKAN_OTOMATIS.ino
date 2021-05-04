@@ -14,14 +14,15 @@ int MotorPin = 10;
 int JamPakanPagi = 6;
 int MenitPakanPagi = 0;
 
-int JamPakanSiang = 12;
-int MenitPakanSiang = 0;
+int JamPakanSiang = 11;
+int MenitPakanSiang = 53;
 
 int JamPakanSore = 15;
-int MenitPakanSore = 18;
+int MenitPakanSore = 21;
 
 
 void setup() {
+  pinMode(buzzer, OUTPUT);
   analogWrite(MotorPin, LOW);
   myservo.attach(9);  // attaches the servo on pin 9 to the servo object
   myservo.write(0);
@@ -73,11 +74,16 @@ void loop() {
 }
 
 void Beri_pakan(){
+  buzz();
+  delay(500);
+  buzz();
+  delay(500);
+  buzz();
   analogWrite(MotorPin, 75);
   myservo.write(50);
   delay(300);
   myservo.write(0);
-  delay(60000);
+  delay(30000);
   myservo.write(50);
   delay(300);
   myservo.write(0);
