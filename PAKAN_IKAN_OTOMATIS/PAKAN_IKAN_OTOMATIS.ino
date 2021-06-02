@@ -14,11 +14,11 @@ int MotorPin = 10;
 int JamPakanPagi = 6;
 int MenitPakanPagi = 0;
 
-int JamPakanSiang = 11;
-int MenitPakanSiang = 53;
+int JamPakanSiang = 12;
+int MenitPakanSiang = 0;
 
-int JamPakanSore = 15;
-int MenitPakanSore = 21;
+int JamPakanSore = 17;
+int MenitPakanSore = 0;
 
 
 void setup() {
@@ -31,17 +31,18 @@ void setup() {
   Serial.begin(9600);
 //   The following lines can be uncommented to set the date and time
 //  rtc.setDOW(WEDNESDAY);     // Set Day-of-Week to SUNDAY
-//  rtc.setTime(17, 00, 00);     // Set the time to 12:00:00 (24hr format)
-//  rtc.setDate(27, 4, 2021);   // Set the date to January 1st, 2014
+//  rtc.setTime(17, 01, 00);     // Set the time to 12:00:00 (24hr format)
+//  rtc.setDate(25, 5, 2021);   // Set the date to January 1st, 2014
   delay(1000);
-  Serial.print("WAKTU PEMBERIAN PAKAN PAGI : ");
+  Serial.print("WAKTU PEMBERIAN PAKAN PAGI  : ");
   Serial.print(JamPakanPagi);
   Serial.print(":");
+  Serial.println(MenitPakanPagi);
   Serial.print("WAKTU PEMBERIAN PAKAN SIANG : ");
   Serial.print(JamPakanSiang);
   Serial.print(":");
-  Serial.println(MenitPakanPagi);
-  Serial.print("WAKTU PEMBERIAN PAKAN SORE : ");
+  Serial.println(MenitPakanSiang);
+  Serial.print("WAKTU PEMBERIAN PAKAN SORE  : ");
   Serial.print(JamPakanSore);
   Serial.print(":");
   Serial.println(MenitPakanSore);
