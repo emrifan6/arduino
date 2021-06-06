@@ -20,18 +20,22 @@ int MenitPakanSiang = 0;
 int JamPakanSore = 17;
 int MenitPakanSore = 0;
 
+//int counter = 0;
 
 void setup() {
   pinMode(buzzer, OUTPUT);
   analogWrite(MotorPin, LOW);
   myservo.attach(9);  // attaches the servo on pin 9 to the servo object
+  delay(200);
+  myservo.write(0);
+  delay(200);
   myservo.write(0);
   Wire.begin();
   rtc.begin();
   Serial.begin(9600);
 //   The following lines can be uncommented to set the date and time
 //  rtc.setDOW(WEDNESDAY);     // Set Day-of-Week to SUNDAY
-//  rtc.setTime(17, 01, 00);     // Set the time to 12:00:00 (24hr format)
+//  rtc.setTime(17, 31, 00);     // Set the time to 12:00:00 (24hr format)
 //  rtc.setDate(25, 5, 2021);   // Set the date to January 1st, 2014
   delay(1000);
   Serial.print("WAKTU PEMBERIAN PAKAN PAGI  : ");
@@ -46,9 +50,13 @@ void setup() {
   Serial.print(JamPakanSore);
   Serial.print(":");
   Serial.println(MenitPakanSore);
+//  Beri_pakan();
 }
 
 void loop() {
+//  counter = counter + 1;
+//    Serial.println(counter);
+//    Beri_pakan();
   t = rtc.getTime();
   Hor = t.hour;
   Min = t.min;
@@ -78,16 +86,16 @@ void Beri_pakan(){
   buzz();
   delay(500);
   buzz();
-  delay(500);
+  delay(700);
   buzz();
-  analogWrite(MotorPin, 75);
+//  analogWrite(MotorPin, 75);
   myservo.write(50);
   delay(300);
   myservo.write(0);
-  delay(30000);
-  myservo.write(50);
-  delay(300);
-  myservo.write(0);
+//  delay(30000);
+//  myservo.write(50);
+//  delay(300);
+//  myservo.write(0);
   analogWrite(MotorPin, LOW);
 }
 
