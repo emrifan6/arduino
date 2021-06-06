@@ -88,15 +88,19 @@ void Beri_pakan(){
   buzz();
   delay(700);
   buzz();
-//  analogWrite(MotorPin, 75);
+  analogWrite(MotorPin, 75);
   myservo.write(50);
   delay(300);
   myservo.write(0);
-//  delay(30000);
+  buzz();
+  delay(500);
+  buzz();
+  delay(65000);
+  analogWrite(MotorPin, LOW);
 //  myservo.write(50);
 //  delay(300);
 //  myservo.write(0);
-  analogWrite(MotorPin, LOW);
+
 }
 
 void buzz() {
