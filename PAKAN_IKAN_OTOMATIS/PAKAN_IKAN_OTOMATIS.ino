@@ -75,6 +75,15 @@ void loop() {
   delay(5000);
 }
 
+void cek_pakan(){
+  int sensor = analogRead(pakan_sensor);
+  Serial.print('Cek Pakan = ');
+  Serial.println(sensor);
+  if(sensor <= limit_pakan_sensor && sensor >= 100){
+    buzz_pakan();
+  }
+}
+
 void rtc_time(){
   t = rtc.getTime();
   Hor = t.hour;
@@ -104,6 +113,25 @@ void Beri_pakan() {
   delay(65000);
   analogWrite(MotorPin, LOW);
 }
+
+void buzz_pakan(){
+  digitalWrite(buzzer, HIGH);
+  delay(300);
+  digitalWrite(buzzer, LOW);
+  delay(50);
+  digitalWrite(buzzer, HIGH);
+  delay(100);
+  digitalWrite(buzzer, LOW);
+  delay(50);
+  digitalWrite(buzzer, HIGH);
+  delay(100);
+  digitalWrite(buzzer, LOW);
+  delay(50);
+  digitalWrite(buzzer, HIGH);
+  delay(300);
+  digitalWrite(buzzer, LOW);
+}
+
 
 void buzz() {
   digitalWrite(buzzer, HIGH);
