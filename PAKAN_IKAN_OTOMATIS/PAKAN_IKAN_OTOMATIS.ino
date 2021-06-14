@@ -1,7 +1,7 @@
 #include <DS3231.h>
 #include <Wire.h>
-#include <Servo.h> 
-Servo myservo;  // create servo object to control a servo 
+#include <Servo.h>
+Servo myservo;  // create servo object to control a servo
 DS3231  rtc(SDA, SCL);
 Time  t;
 #define buzzer 4
@@ -20,7 +20,10 @@ int MenitPakanSiang = 0;
 int JamPakanSore = 17;
 int MenitPakanSore = 0;
 
-//int counter = 0;
+int pakan_sensor = A0;
+int limit_pakan_sensor = 700; 
+//(jika nilai sensor pakan lebih dari 700 berarti pakan habis/macet) 
+
 
 void setup() {
   pinMode(buzzer, OUTPUT);
@@ -33,11 +36,12 @@ void setup() {
   Wire.begin();
   rtc.begin();
   Serial.begin(9600);
-//   The following lines can be uncommented to set the date and time
-//  rtc.setDOW(WEDNESDAY);     // Set Day-of-Week to SUNDAY
-//  rtc.setTime(17, 31, 00);     // Set the time to 12:00:00 (24hr format)
-//  rtc.setDate(25, 5, 2021);   // Set the date to January 1st, 2014
+  //   The following lines can be uncommented to set the date and time
+  //  rtc.setDOW(WEDNESDAY);     // Set Day-of-Week to SUNDAY
+  //  rtc.setTime(18, 25, 00);     // Set the time to 12:00:00 (24hr format)
+  //  rtc.setDate(25, 5, 2021);   // Set the date to January 1st, 2014
   delay(1000);
+  rtc_time();
   Serial.print("WAKTU PEMBERIAN PAKAN PAGI  : ");
   Serial.print(JamPakanPagi);
   Serial.print(":");
@@ -50,13 +54,28 @@ void setup() {
   Serial.print(JamPakanSore);
   Serial.print(":");
   Serial.println(MenitPakanSore);
-//  Beri_pakan();
 }
 
 void loop() {
-//  counter = counter + 1;
-//    Serial.println(counter);
-//    Beri_pakan();
+  rtc_time();
+  if ( Hor == JamPakanPagi &&  Min == MenitPakanPagi) {
+    Serial.println("WAKTU PEMBERIAN PAKAN PAGI");
+    Beri_pakan();
+  } else if ( Hor == JamPakanSiang &&  Min == MenitPakanSiang) {
+    Serial.println("WAKTU PEMBERIAN PAKAN SIANG");
+    Beri_pakan();
+  } else if ( Hor == JamPakanSore &&  Min == MenitPakanSore) {
+    Serial.println("WAKTU PEMBERIAN PAKAN SORE");
+    Beri_pakan();
+  } else {
+  }
+  int sensorValue = analogRead(A0);
+  // print out the value you read:
+  Serial.println(sensorValue);
+  delay(5000);
+}
+
+void rtc_time(){
   t = rtc.getTime();
   Hor = t.hour;
   Min = t.min;
@@ -66,23 +85,10 @@ void loop() {
   Serial.print(Min);
   Serial.print(":");
   Serial.println(Sec);
-
-  if ( Hor == JamPakanPagi &&  Min == MenitPakanPagi) {
-    Serial.println("WAKTU PEMBERIAN PAKAN PAGI");
-    Beri_pakan();
-  }else if( Hor == JamPakanSiang &&  Min == MenitPakanSiang){
-    Serial.println("WAKTU PEMBERIAN PAKAN SIANG");
-    Beri_pakan();
-  }else if( Hor == JamPakanSore &&  Min == MenitPakanSore){
-    Serial.println("WAKTU PEMBERIAN PAKAN SORE");
-    Beri_pakan();
-  }else{
-    
-  }
-  delay(5000);
+  Serial.println();
 }
 
-void Beri_pakan(){
+void Beri_pakan() {
   buzz();
   delay(500);
   buzz();
@@ -90,17 +96,13 @@ void Beri_pakan(){
   buzz();
   analogWrite(MotorPin, 75);
   myservo.write(50);
-  delay(300);
+  delay(700);
   myservo.write(0);
   buzz();
   delay(500);
   buzz();
   delay(65000);
   analogWrite(MotorPin, LOW);
-//  myservo.write(50);
-//  delay(300);
-//  myservo.write(0);
-
 }
 
 void buzz() {
