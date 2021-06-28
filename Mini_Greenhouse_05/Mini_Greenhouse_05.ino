@@ -7,7 +7,6 @@
   Mini_Greenhouse_05
   - Menghilangkan NTP
   - Menambah RTC
-  - Nilai rata2 pembacaan dht
 
 */
 

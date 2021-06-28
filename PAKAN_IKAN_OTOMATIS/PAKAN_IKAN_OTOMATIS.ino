@@ -21,9 +21,14 @@ int JamPakanSore = 17;
 int MenitPakanSore = 0;
 
 int pakan_sensor = A0;
-int limit_pakan_sensor = 700; 
-//(jika nilai sensor pakan lebih dari 700 berarti pakan habis/macet) 
+int limit_pakan_sensor = 700;
+//(jika nilai sensor pakan lebih dari 700 berarti pakan habis/macet)
 
+//millis
+unsigned long previousMillis = 0;        // will store last time LED was updated
+const long interval = 1000;           // interval at which to blink (milliseconds)
+int detik_cekpakan = 0;
+int detik_pakan = 0;
 
 void setup() {
   pinMode(buzzer, OUTPUT);
@@ -57,34 +62,44 @@ void setup() {
 }
 
 void loop() {
-  rtc_time();
-  if ( Hor == JamPakanPagi &&  Min == MenitPakanPagi) {
-    Serial.println("WAKTU PEMBERIAN PAKAN PAGI");
-    Beri_pakan();
-  } else if ( Hor == JamPakanSiang &&  Min == MenitPakanSiang) {
-    Serial.println("WAKTU PEMBERIAN PAKAN SIANG");
-    Beri_pakan();
-  } else if ( Hor == JamPakanSore &&  Min == MenitPakanSore) {
-    Serial.println("WAKTU PEMBERIAN PAKAN SORE");
-    Beri_pakan();
-  } else {
+  if (millis() - previousMillis >= interval) {
+    previousMillis = millis();
+    if (++detik_cekpakan >= 3600) {
+      cek_pakan();
+      detik_cekpakan = 0;
+    }
+    if (++detik_pakan >= 60) {
+      rtc_time();
+      if ( Hor == JamPakanPagi &&  Min == MenitPakanPagi) {
+        Serial.println("WAKTU PEMBERIAN PAKAN PAGI");
+        Beri_pakan();
+      } else if ( Hor == JamPakanSiang &&  Min == MenitPakanSiang) {
+        Serial.println("WAKTU PEMBERIAN PAKAN SIANG");
+        Beri_pakan();
+      } else if ( Hor == JamPakanSore &&  Min == MenitPakanSore) {
+        Serial.println("WAKTU PEMBERIAN PAKAN SORE");
+        Beri_pakan();
+      } else {
+      }
+      detik_pakan = 0;
+    }
   }
-  int sensorValue = analogRead(A0);
-  // print out the value you read:
-  Serial.println(sensorValue);
-  delay(5000);
 }
 
-void cek_pakan(){
+void cek_pakan() {
   int sensor = analogRead(pakan_sensor);
   Serial.print('Cek Pakan = ');
-  Serial.println(sensor);
-  if(sensor <= limit_pakan_sensor && sensor >= 100){
+  Serial.print(sensor);
+  if (sensor <= limit_pakan_sensor && sensor >= 100) {
+    Serial.println(' PAKAN HABIS');
     buzz_pakan();
+  }else{
+   Serial.println(' PAKAN MASIH');
   }
+  Serial.println();
 }
 
-void rtc_time(){
+void rtc_time() {
   t = rtc.getTime();
   Hor = t.hour;
   Min = t.min;
@@ -110,11 +125,12 @@ void Beri_pakan() {
   buzz();
   delay(500);
   buzz();
-  delay(65000);
+  cek_pakan();
   analogWrite(MotorPin, LOW);
+//  delay(60000);
 }
 
-void buzz_pakan(){
+void buzz_pakan() {
   digitalWrite(buzzer, HIGH);
   delay(300);
   digitalWrite(buzzer, LOW);
@@ -141,6 +157,7 @@ void buzz() {
   digitalWrite(buzzer, HIGH);
   delay(50);
   digitalWrite(buzzer, LOW);
+  delay(50);
   digitalWrite(buzzer, HIGH);
   delay(200);
   digitalWrite(buzzer, LOW);

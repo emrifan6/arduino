@@ -45,6 +45,8 @@ void setup() {
   TFTscreen.background(0, 0, 0); // B,G,R
   //set the text size
   TFTscreen.setTextSize(1);
+  TFTscreen.stroke(255, 255, 255);
+  TFTscreen.text("Rifan", 95, 152);
   
 }
 
@@ -132,7 +134,7 @@ void loop() {
     TFTscreen.text("W", 95, 115);
   }
 
-  TFTscreen.stroke(151, 152, 33); //  rgb(33,152,151)
+  TFTscreen.stroke(255, 108, 0); //  rgb(255,108,0)
   TFTscreen.rect(12,50,112,95); 
 
   
