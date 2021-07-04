@@ -31,21 +31,11 @@ void setup() {
 
 void loop() {
 
-  if (Serial.available()){
-    StaticJsonDocument<300> doc;
-    DeserializationError err = deserializeJson(doc, Serial);
-    if (err == DeserializationError::Ok)
-    {
-      String data = "&pakan_ikan=" + doc["pakan_ikan"].as<String>() + "&cek_pakan=" + doc["cek_pakan"].as<String>();
-      Serial.println(data);
-        postdata(data);
-      }
-      else
-    {
-//      while (Serial.available() > 0)
-//        Serial.read();
-    }
-  }
+  while (Serial.available() > 0 ) {
+     String data = Serial.readString();
+     data.trim();
+     postdata(data);
+   }
 }
 
 void connectwifi() {
