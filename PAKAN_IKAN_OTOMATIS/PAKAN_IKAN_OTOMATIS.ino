@@ -1,3 +1,6 @@
+//0.1 add reset function to esp
+
+
 #include <DS3231.h>
 #include <Wire.h>
 #include <Servo.h>
@@ -14,6 +17,7 @@ Time  t;
 int Hor;
 int Min;
 int Sec;
+
 
 int MotorPin = 10;
 
@@ -36,7 +40,11 @@ const long interval = 1000;           // interval at which to blink (millisecond
 int detik_cekpakan = 0;
 int detik_pakan = 0;
 int detik_test = 0;
+int detik_cekesp = 0;
+int cekesp_counter = 0;
+int cekespwifi_counter = 0;
 
+int reset_pin = 2;
 
 void setup() {
   pinMode(buzzer, OUTPUT);
@@ -52,8 +60,8 @@ void setup() {
   Serial.begin(9600);
   //   The following lines can be uncommented to set the date and time
   //  rtc.setDOW(WEDNESDAY);     // Set Day-of-Week to SUNDAY
-//    rtc.setTime(13, 1, 00);     // Set the time to 12:00:00 (24hr format)
-//    rtc.setDate(4, 7, 2021);   // Set the date to January 1st, 2014
+  //    rtc.setTime(13, 1, 00);     // Set the time to 12:00:00 (24hr format)
+  //    rtc.setDate(4, 7, 2021);   // Set the date to January 1st, 2014
   delay(1000);
   rtc_time();
   Serial.print("WAKTU PEMBERIAN PAKAN PAGI  : ");
@@ -72,13 +80,23 @@ void setup() {
   delay(1000);
   espserial.begin(9600);
   delay(1000);
+
+  pinMode(reset_pin, OUTPUT);
+  digitalWrite(reset_pin, HIGH);
 }
 
 void loop() {
-  
+
   if (espserial.available()) {
     Serial.println();
     String incomingString = espserial.readString();
+    String esp_replay = incomingString;
+    esp_replay.trim();
+    if (esp_replay == "ESP_OK") {
+      cekesp_counter = 0;
+    } else if (esp_replay == "WIFI_OK") {
+      cekespwifi_counter = 0;
+    }
     Serial.print("ARDUINO received: ");
     Serial.println(incomingString);
   }
@@ -88,15 +106,45 @@ void loop() {
     Serial.print(".");
     previousMillis = millis();
     if (++detik_test >= 60) {
-      
       detik_test = 0;
+    }
+    if (++detik_cekesp >= 60) {
+      espserial.println("CEK_ESP");
+      //      delay(10);
+      if (espserial.available()) {
+        String esp_replay = espserial.readString();
+        esp_replay.trim();
+        if (esp_replay == "ESP_OK") {
+          cekesp_counter = 0;
+        } else {
+          cekesp_counter++;
+        }
+      }
+      espserial.println("CEK_WIFI");
+      //      delay(10);
+      if (espserial.available()) {
+        String esp_replay = espserial.readString();
+        esp_replay.trim();
+        if (esp_replay == "WIFI_OK") {
+          cekespwifi_counter = 0;
+        } else {
+          cekespwifi_counter++;
+        }
+      }
+      if (cekespwifi_counter >= 10 || cekespwifi_counter >= 10) {
+        digitalWrite(reset_pin, LOW);
+        delay(100);
+        digitalWrite(reset_pin, HIGH);
+        cekespwifi_counter = 0;
+      }
+      detik_cekesp = 0;
     }
     if (++detik_cekpakan >= 3600) {
       if (cek_pakan()) {
-          send_esp("cek", "masih");
-        } else {
-          send_esp("cek", "habis");
-        }
+        send_esp("cek", "masih");
+      } else {
+        send_esp("cek", "habis");
+      }
       detik_cekpakan = 0;
     }
     if (++detik_pakan >= 60) {
@@ -138,13 +186,13 @@ void send_esp(String pakan_ikan, String cek_pakan) {
   String data = "&pakan_ikan=" + pakan_ikan + "&cek_pakan=" + cek_pakan;
   Serial.println(data);
   espserial.println(data);
-  
-//  StaticJsonDocument<200> doc;
-//  doc["pakan_ikan"] = pakan_ikan;
-//  doc["cek_pakan"] = cek_pakan;
-//  serializeJson(doc, Serial);
-//  Serial.println();
-//  serializeJson(doc, espserial);
+
+  //  StaticJsonDocument<200> doc;
+  //  doc["pakan_ikan"] = pakan_ikan;
+  //  doc["cek_pakan"] = cek_pakan;
+  //  serializeJson(doc, Serial);
+  //  Serial.println();
+  //  serializeJson(doc, espserial);
 }
 
 
@@ -179,7 +227,7 @@ void rtc_time() {
 
 void Beri_pakan() {
   if (cek_pakan) {
-    
+
   } else {
     buzz_pakan();
   }

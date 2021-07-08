@@ -6,8 +6,8 @@
 #include <ArduinoJson.h>
 
 /* Set these to your desired credentials. */
-const char *ssid = "IYAN";//"ElisaCom_Kos";  //ENTER YOUR WIFI SETTINGS
-const char *password = "I_yan12345";//"kosElisa12345";
+const char *ssid = "ElisaCom_Kos";  //ENTER YOUR WIFI SETTINGS"IYAN";//"I_yan12345";//
+const char *password = "kosElisa12345";
 
 
 
@@ -32,19 +32,17 @@ void setup() {
 void loop() {
 
   if (Serial.available()){
-    StaticJsonDocument<300> doc;
-    DeserializationError err = deserializeJson(doc, Serial);
-    if (err == DeserializationError::Ok)
-    {
-      String data = "&pakan_ikan=" + doc["pakan_ikan"].as<String>() + "&cek_pakan=" + doc["cek_pakan"].as<String>();
-      Serial.println(data);
-        postdata(data);
+    String data = Serial.readString();
+     data.trim();
+     if(data == "CEK_ESP"){
+      Serial.println("ESP_OK");
+     }else if(data == "CEK_WIFI"){
+      if(WiFi.status() == WL_CONNECTED){
+        Serial.println("WIFI_OK");
       }
-      else
-    {
-//      while (Serial.available() > 0)
-//        Serial.read();
-    }
+     }else{
+      postdata(data);
+     }
   }
 }
 
